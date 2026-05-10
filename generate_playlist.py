@@ -18,20 +18,38 @@ def filterVideoFiles(files):
     ]
     return video_files
 
+def check_part_three (episode, episode_files):
+    is_last_file = episode_files[-1] == episode
+    if is_last_file: return False
+    
+    index = episode_files.index(episode)
+    next_episode = re.search(r'\(3\)', episode_files[index + 1])
+
+    if next_episode and next_episode.group() == '(3)':
+        return True
+    return False
+
 def check_episode_parts(episode, episode_files, season):
-    search_file = re.search(r'\(a\)|\(b\)', episode)
+    search_file = re.search(r'\(a\)|\(b\)|\(1\)|\(2\)|\(3\)', episode)
     if search_file:
         match = search_file.group()
-        episode_a = ""
-        episode_b = ""
+        part_a = ""
+        part_b = ""
+        part_c = ""
         index = episode_files.index(episode)
-        if match == '(a)':    
-            episode_a = episode
-            episode_b = episode_files[index + 1]
-        if match == '(b)':  
-            episode_a = episode_files[index - 1]
-            episode_b = episode          
-        return [f"{season}{episode_a}", f"{season}{episode_b}"]
+        if match == ('(a)' or '(1)'):    
+            part_a = f"{season}{episode}"
+            part_b = f"{season}{episode_files[index + 1]}"
+            part_c = f"{season}{episode_files[index + 2]}" if check_part_three(episode, episode_files) else ""
+        if match == ('(b)' or '(2)'):  
+            part_a = f"{season}{episode_files[index - 1]}"
+            part_b = f"{season}{episode}" 
+            part_c = f"{season}{episode_files[index + 1]}" if check_part_three(episode, episode_files) else ""
+        if match == '(3)':
+            part_a = f"{season}{episode_files[index - 2]}"
+            part_b = f"{season}{episode_files[index - 1]}"
+            part_c = f"{season}{episode}"
+        return [part_a, part_b, part_c]
     return [f"{season}{episode}"]
     
 def pickEpisode (show):
@@ -93,6 +111,10 @@ def writePlaylist(shows):
                     if len(episode) > 1 and episode.index(part) == 1:
                         clips = generate_mid_commercials(show)
                         for clip in clips:
+                            playlist.write(clip) 
+                    if episode.index(part) == 2:
+                        clips = generate_mid_commercials(show)
+                        for clip in clips:
                             playlist.write(clip)   
                     playlist.write(f"{path}/{show}/{part}\n")
                 
@@ -105,7 +127,7 @@ def writePlaylist(shows):
                     playlist.write(clip)
 
 
-your_shows = ['Courage the Cowardly Dog', 'Dexter\'s Laboratory', 'Ed, Edd, n Eddy', 'Johnny Bravo', 'The Powerpuff Girls', 'Cow and Chicken' ]
+your_shows = ['Courage the Cowardly Dog', 'Dexter\'s Laboratory', 'Ed, Edd, n Eddy', 'Johnny Bravo', 'The Powerpuff Girls']
 repeat_schedule = int(input("Number of blocks? ") or 5)
 random.shuffle(your_shows)
 
