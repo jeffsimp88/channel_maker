@@ -1,6 +1,7 @@
 import os
 import random
 import re
+import subprocess
 from generate_commercials import generateCommercialBreak, generate_mid_commercials
 
 path = '../TV shows'
@@ -18,15 +19,21 @@ def filterVideoFiles(files):
     ]
     return video_files
 
-def check_part_three (episode, episode_files):
+def check_part_three (episode, episode_files: list, match):
     is_last_file = episode_files[-1] == episode
     if is_last_file: return False
     
     index = episode_files.index(episode)
-    next_episode = re.search(r'\(3\)', episode_files[index + 1])
-
-    if next_episode and next_episode.group() == '(3)':
-        return True
+    
+    if match == '(b)' or match == '(2)':
+        next_episode = re.search(r'\(3\)', episode_files[index + 1])
+        if next_episode and next_episode.group() == '(3)':
+            return True
+    
+    if (match == '(a)' or match == '(1)') and episode_files[-1] != episode_files[index+1]:
+        next_episode = re.search(r'\(3\)', episode_files[index + 2])
+        if next_episode and next_episode.group() == '(3)':
+            return True
     return False
 
 def check_episode_parts(episode, episode_files, season):
@@ -37,14 +44,14 @@ def check_episode_parts(episode, episode_files, season):
         part_b = ""
         part_c = ""
         index = episode_files.index(episode)
-        if match == ('(a)' or '(1)'):    
+        if match == '(a)' or match == '(1)':    
             part_a = f"{season}{episode}"
             part_b = f"{season}{episode_files[index + 1]}"
-            part_c = f"{season}{episode_files[index + 2]}" if check_part_three(episode, episode_files) else ""
-        if match == ('(b)' or '(2)'):  
+            part_c = f"{season}{episode_files[index + 2]}" if check_part_three(episode, episode_files, match) else ""
+        if match == '(b)' or match == '(2)':  
             part_a = f"{season}{episode_files[index - 1]}"
             part_b = f"{season}{episode}" 
-            part_c = f"{season}{episode_files[index + 1]}" if check_part_three(episode, episode_files) else ""
+            part_c = f"{season}{episode_files[index + 1]}" if check_part_three(episode, episode_files, match) else ""
         if match == '(3)':
             part_a = f"{season}{episode_files[index - 2]}"
             part_b = f"{season}{episode_files[index - 1]}"
@@ -128,8 +135,10 @@ def writePlaylist(shows):
 
 
 your_shows = ['Courage the Cowardly Dog', 'Dexter\'s Laboratory', 'Ed, Edd, n Eddy', 'Johnny Bravo', 'The Powerpuff Girls']
-repeat_schedule = int(input("Number of blocks? ") or 5)
 random.shuffle(your_shows)
+# repeat_schedule = int(input("Number of blocks? ") or 5)
+repeat_schedule = 5
 
 writePlaylist(your_shows)
 print('Your Playlist is ready!')
+# subprocess.run(['vlc', 'playlist.m3u'])
