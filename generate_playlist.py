@@ -60,7 +60,6 @@ def check_episode_parts(episode, episode_files, season):
     return [f"{season}{episode}"]
     
 def pickEpisode (show):
-    print(show)
     show_path = f"{path}/{show}"
     selected_season = ""
     episode_files = []
@@ -113,16 +112,18 @@ def writePlaylist(shows):
                 bumper = selectBumpers(show)
                 playlist.write(f"{bumper}\n")
                 
-                episode = pickEpisode(show)
-                for part in episode:
-                    if len(episode) > 1 and episode.index(part) == 1:
+                episode_parts = pickEpisode(show)
+                for part in episode_parts:
+                    if len(episode_parts) > 1 and episode_parts.index(part) == 1:
                         clips = generate_mid_commercials(show)
                         for clip in clips:
                             playlist.write(clip) 
-                    if episode.index(part) == 2:
+                    if part == '':
+                        break
+                    if part != '' and episode_parts.index(part) == 2:
                         clips = generate_mid_commercials(show)
                         for clip in clips:
-                            playlist.write(clip)   
+                            playlist.write(clip)
                     playlist.write(f"{path}/{show}/{part}\n")
                 
                 next_show = get_next_show(show, shows)
