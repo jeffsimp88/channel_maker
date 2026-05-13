@@ -8,10 +8,10 @@ def get_short_or_music():
     selected_video = [f"{selected_bumper}/{random.choice(video_files)}\n"]
     return selected_video
 
-def get_commercials():
-    commercials_path = "./Commercials/Clips"
+def get_commercials(num):
+    commercials_path = "./Commercials"
     files = os.listdir(commercials_path)
-    selected_clips = random.sample(files, k=3)
+    selected_clips = random.sample(files, k=num)
     set_clips = [f"{commercials_path}/{clip}\n" for clip in selected_clips] 
     return set_clips
 
@@ -24,7 +24,7 @@ def get_CN_bumper():
 def generateCommercialBreak():
     clips = []
     clips.extend(get_short_or_music())
-    clips.extend(get_commercials())
+    clips.extend(get_commercials(5))
     clips.extend(get_CN_bumper())
     return clips
 
@@ -49,6 +49,6 @@ def get_back_to_bumper(show):
 def generate_mid_commercials(show):
     clips=[]
     clips.extend(f"{get_right_back_bumper(show)}\n")
-    clips.extend(get_commercials())
+    clips.extend(get_commercials(3))
     clips.extend(f"{get_back_to_bumper(show)}\n")
     return clips

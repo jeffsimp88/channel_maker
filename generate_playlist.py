@@ -39,6 +39,7 @@ def check_part_three (episode, episode_files: list, match):
 def check_episode_parts(episode, episode_files, season):
     search_file = re.search(r'\(a\)|\(b\)|\(1\)|\(2\)|\(3\)', episode)
     if search_file:
+        episode_files.sort()
         match = search_file.group()
         part_a = ""
         part_b = ""
