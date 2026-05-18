@@ -1,7 +1,9 @@
 # Specific Files
 playlist.m3u
 text.txt
+test.py
 
 # Directories
 Bumpers/
 Commercials/
+_pycache_/
