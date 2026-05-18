@@ -22,32 +22,25 @@ def get_channel_bumper():
     selected_file = [f"{bumper_path}/{secrets.choice(files)}\n"]
     return selected_file
 
-
-def get_be_right_back_bumper(show):
-    bumper_path = "./Bumpers/5 - We_ll Be Right Back"
+def get_pre_post_bumpers(show, bumper_path):
     list_of_bumpers = os.listdir(bumper_path)
     show_bumpers = [file for file in list_of_bumpers if show in file]
-    if len(show_bumpers) == 0: return ""
-    bumper = secrets.choice(show_bumpers)
-    if os.path.isfile(f"{bumper_path}/{bumper}"):
-        return f"{bumper_path}/{bumper}"
-    return ""
-
-def get_back_to_bumper(show):
-    bumper_path = "Bumpers/6 - Now Back To"
-    list_of_bumpers = os.listdir(bumper_path)
-    show_bumpers = [file for file in list_of_bumpers if show in file]
-    if len(show_bumpers) == 0: return ""
-    bumper = secrets.choice(show_bumpers)
-    if os.path.isfile(f"{bumper_path}/{bumper}"):
-        return f"{bumper_path}/{bumper}"
-    return ""
+    generic_bumpers = [file for file in list_of_bumpers if 'generic' in file.lower()]
+    if len(show_bumpers) > 0:
+        bumper = secrets.choice(show_bumpers)
+        if os.path.isfile(f"{bumper_path}/{bumper}"): return f"{bumper_path}/{bumper}"
+    if len(generic_bumpers) > 0:
+        bumper = secrets.choice(generic_bumpers)
+        if os.path.isfile(f"{bumper_path}/{bumper}"): return f"{bumper_path}/{bumper}"
+    return ""  
 
 def generate_mid_commercials(show):
     commercials=[]
-    commercials.extend(f"{get_be_right_back_bumper(show)}\n")
+    right_back_bumper = get_pre_post_bumpers(show, "Bumpers/5 - We_ll Be Right Back")
+    commercials.extend(f"{right_back_bumper}\n")
     commercials.extend(get_commercials(3))
-    commercials.extend(f"{get_back_to_bumper(show)}\n")
+    back_to_bumper = get_pre_post_bumpers(show, "Bumpers/6 - Now Back To")
+    commercials.extend(f"{back_to_bumper}\n")
     return commercials
 
 def generate_commercial_break():

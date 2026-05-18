@@ -25,7 +25,7 @@ def pick_episode (show):
     else:
         files = [file for file in show_directory if os.path.isfile(f"{show_path}/{file}")]
         episode_files = filter_video_files(files)
-        episode = secrets.choice(episode_files)
+        if len(episode_files) > 0: episode = secrets.choice(episode_files)
     
     final_episode_path = check_episode_parts(episode, episode_files, selected_season)
     return final_episode_path
@@ -62,16 +62,11 @@ def write_playlist(shows):
                 
                 episode_parts = pick_episode(show)
                 for part in episode_parts:
-                    if part == '':
-                        break
-                    if len(episode_parts) > 1 and episode_parts.index(part) == 1:
+                    if part == '': break
+                    if len(episode_parts) > 1 and episode_parts.index(part) == 1 or episode_parts.index(part) == 2:
                         commercials = generate_mid_commercials(show)
                         for clip in commercials:
-                            playlist.write(clip) 
-                    if part != '' and episode_parts.index(part) == 2:
-                        commercials = generate_mid_commercials(show)
-                        for clip in commercials:
-                            playlist.write(clip)
+                            if clip: playlist.write(clip)
                     playlist.write(f"{tv_shows_path}/{show}/{part}\n")
                 
                 next_show = get_next_show(show, shows)
@@ -83,8 +78,8 @@ def write_playlist(shows):
                    if clip != "": playlist.write(clip)
 
 
-# your_shows = ['Courage the Cowardly Dog', 'Dexter\'s Laboratory', 'Ed, Edd, n Eddy', 'Johnny Bravo', 'The Powerpuff Girls']
-your_shows = os.listdir(tv_shows_path)
+your_shows = ['Courage the Cowardly Dog', 'Dexter\'s Laboratory', 'Ed, Edd, n Eddy', 'Johnny Bravo', 'The Powerpuff Girls']
+# your_shows = os.listdir(tv_shows_path)
 random.shuffle(your_shows)
 repeat_schedule = 1
 
