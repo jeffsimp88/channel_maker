@@ -5,7 +5,7 @@ import subprocess
 from generate_commercials import generate_commercial_break, generate_mid_commercials
 from generate_episode import  check_episode_parts, filter_video_files
 
-tv_shows_path = '../TV shows'
+tv_shows_path = '../TV Shows'
     
 def pick_episode (show):
     show_path = f"{tv_shows_path}/{show}"
@@ -81,7 +81,7 @@ def write_playlist(shows):
 your_shows = ['Courage the Cowardly Dog', 'Dexter\'s Laboratory', 'Ed, Edd, n Eddy', 'Johnny Bravo', 'The Powerpuff Girls']
 # your_shows = os.listdir(tv_shows_path)
 random.shuffle(your_shows)
-repeat_schedule = 1
+repeat_schedule = 5
 
 write_playlist(your_shows)
 print('Your Playlist is ready!')

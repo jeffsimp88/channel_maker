@@ -1,6 +1,15 @@
+from datetime import datetime
 import os
 import random
 import secrets
+
+def filter_video_files(files):
+    video_extensions = ('.mp4', '.mkv', '.avi')
+    video_files = [
+        file for file in files
+        if file.lower().endswith(video_extensions)
+    ]
+    return video_files
 
 def get_short_or_music():
     bumper_videos_paths = ["./Bumpers/CN Music Videos", "./Bumpers/CN Shorties"]
@@ -12,9 +21,25 @@ def get_short_or_music():
 def get_commercials(num):
     commercials_path = "./Commercials"
     files = os.listdir(commercials_path)
-    selected_commercials = random.sample(files, k=num)
-    set_clips = [f"{commercials_path}/{clip}\n" for clip in selected_commercials] 
+    filtered_commercials = filter_video_files(files)
+    selected_commercials = random.sample(filtered_commercials, k=num)
+    set_clips = [f"{commercials_path}/{clip}\n" for clip in selected_commercials]
+    current_date = datetime.now()
+    if current_date.month == 10:
+        set_clips.pop()
+        set_clips.extend(get_holiday_commercial("Halloween"))
+        random.shuffle(set_clips)
+    if current_date.month == 12 and current_date.day <= 25:
+        set_clips.pop()
+        set_clips.extend(get_holiday_commercial("Christmas"))
+        random.shuffle(set_clips)
     return set_clips
+
+def get_holiday_commercial(holiday):
+    commercial_path = f"./Holiday Commercials/{holiday}"
+    files = os.listdir(commercial_path)
+    selected_commercial = [f"{commercial_path}/{secrets.choice(files)}\n"]
+    return selected_commercial
 
 def get_channel_bumper():
     bumper_path = "./Bumpers/2 - Station IDs"
