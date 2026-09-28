@@ -24,6 +24,11 @@ def get_commercials(num):
     filtered_commercials = filter_video_files(files)
     selected_commercials = random.sample(filtered_commercials, k=num)
     set_clips = [f"{commercials_path}/{clip}\n" for clip in selected_commercials]
+    
+    station_commercial = get_station_commericals()
+    set_clips.extend(station_commercial)
+    random.shuffle(set_clips)
+    
     current_date = datetime.now()
     if current_date.month == 10:
         set_clips.pop()
@@ -33,6 +38,14 @@ def get_commercials(num):
         set_clips.pop()
         set_clips.extend(get_holiday_commercial("Christmas"))
         random.shuffle(set_clips)
+    return set_clips
+
+def get_station_commericals ():
+    commercials_path = "./Bumpers/CN Ads"
+    files = os.listdir(commercials_path)
+    filtered_files = filter_video_files(files)
+    selected_commercials = secrets.choice(filtered_files)
+    set_clips = [f"{commercials_path}/{selected_commercials}\n"]
     return set_clips
 
 def get_holiday_commercial(holiday):

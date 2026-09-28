@@ -30,13 +30,13 @@ def pick_episode (show):
     final_episode_path = check_episode_parts(episode, episode_files, selected_season)
     return final_episode_path
 
-def select_bumpers(show):
+def get_intro_bumper(show):
     bumper_path = f"./Bumpers/3 - Pre- and Post-show bumper/Cartoon Cartoons - {show}.mp4"
     if os.path.isfile(bumper_path):
         return bumper_path
     return ""
 
-def set_up_next_bumper(next_Show):
+def get_up_next_bumper(next_Show):
     bumper_path = f"./Bumpers/1 - Coming Up Next/Up Next - {next_Show}.mp4"
     if os.path.isfile(bumper_path):
         return bumper_path
@@ -57,7 +57,7 @@ def write_playlist(shows):
     for _ in range(repeat_schedule):
         with open('playlist.m3u', "a") as playlist:
             for show in shows:
-                intro_bumper = select_bumpers(show)
+                intro_bumper = get_intro_bumper(show)
                 if intro_bumper: playlist.write(f"{intro_bumper}\n")
                 
                 episode_parts = pick_episode(show)
@@ -70,7 +70,7 @@ def write_playlist(shows):
                     playlist.write(f"{tv_shows_path}/{show}/{part}\n")
                 
                 next_show = get_next_show(show, shows)
-                up_next = set_up_next_bumper(next_show)
+                up_next = get_up_next_bumper(next_show)
                 if up_next: playlist.write(f"{up_next}\n")
                 
                 commercials = generate_commercial_break()
@@ -78,7 +78,7 @@ def write_playlist(shows):
                    if clip != "": playlist.write(clip)
 
 
-your_shows = ['Courage the Cowardly Dog', 'Dexter\'s Laboratory', 'Ed, Edd, n Eddy', 'Johnny Bravo', 'The Powerpuff Girls']
+your_shows = ['Courage the Cowardly Dog', 'Dexter\'s Laboratory', 'Ed, Edd, n Eddy', 'Johnny Bravo', 'The Powerpuff Girls', 'Sheep in the Big City']
 # your_shows = os.listdir(tv_shows_path)
 random.shuffle(your_shows)
 repeat_schedule = 5
