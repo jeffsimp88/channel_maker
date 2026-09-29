@@ -4,6 +4,7 @@ import secrets
 import subprocess
 from generate_commercials import generate_commercial_break, generate_mid_commercials
 from generate_episode import  check_episode_parts, filter_video_files
+from create_anthology_episode import create_anthology_episode
 
 tv_shows_path = '../TV Shows'
     
@@ -51,23 +52,30 @@ def get_next_show(show, shows):
         next_show = shows[0]
     return next_show
 
+def build_episode_parts(show):
+    episode_block = []
+    intro_bumper = get_intro_bumper(show)
+    if intro_bumper: episode_block.append(f"{intro_bumper}\n")
+    episode_parts = pick_episode(show)
+    for part in episode_parts:
+        if part == '': break
+        if len(episode_parts) > 1 and episode_parts.index(part) == 1 or episode_parts.index(part) == 2:
+            commercials = generate_mid_commercials(show)
+            for clip in commercials:
+                if clip: episode_block.append(clip)
+        episode_block.append(f"{tv_shows_path}/{show}/{part}\n")
+    return episode_block
+
 def write_playlist(shows):
     with open('playlist.m3u', "w") as playlist:
         playlist.write("#EXTM3U\n")
     for _ in range(repeat_schedule):
         with open('playlist.m3u', "a") as playlist:
             for show in shows:
-                intro_bumper = get_intro_bumper(show)
-                if intro_bumper: playlist.write(f"{intro_bumper}\n")
+                episode = create_anthology_episode(show) if show == "Looney Tunes" or show == "Tom and Jerry" else build_episode_parts(show)
                 
-                episode_parts = pick_episode(show)
-                for part in episode_parts:
-                    if part == '': break
-                    if len(episode_parts) > 1 and episode_parts.index(part) == 1 or episode_parts.index(part) == 2:
-                        commercials = generate_mid_commercials(show)
-                        for clip in commercials:
-                            if clip: playlist.write(clip)
-                    playlist.write(f"{tv_shows_path}/{show}/{part}\n")
+                for part in episode:
+                    playlist.write(part)
                 
                 next_show = get_next_show(show, shows)
                 up_next = get_up_next_bumper(next_show)
@@ -78,7 +86,7 @@ def write_playlist(shows):
                    if clip != "": playlist.write(clip)
 
 
-your_shows = ['Courage the Cowardly Dog', 'Dexter\'s Laboratory', 'Ed, Edd, n Eddy', 'Johnny Bravo', 'The Powerpuff Girls', 'Sheep in the Big City']
+your_shows = ['Courage the Cowardly Dog', 'Dexter\'s Laboratory', 'Ed, Edd, n Eddy', 'Johnny Bravo', 'The Powerpuff Girls', 'Sheep in the Big City', 'Looney Tunes', 'Tom and Jerry']
 # your_shows = os.listdir(tv_shows_path)
 random.shuffle(your_shows)
 repeat_schedule = 5

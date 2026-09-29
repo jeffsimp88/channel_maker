@@ -66,19 +66,19 @@ def get_pre_post_bumpers(show, bumper_path):
     generic_bumpers = [file for file in list_of_bumpers if 'generic' in file.lower()]
     if len(show_bumpers) > 0:
         bumper = secrets.choice(show_bumpers)
-        if os.path.isfile(f"{bumper_path}/{bumper}"): return f"{bumper_path}/{bumper}"
+        if os.path.isfile(f"{bumper_path}/{bumper}"): return f"{bumper_path}/{bumper}\n"
     if len(generic_bumpers) > 0:
         bumper = secrets.choice(generic_bumpers)
-        if os.path.isfile(f"{bumper_path}/{bumper}"): return f"{bumper_path}/{bumper}"
+        if os.path.isfile(f"{bumper_path}/{bumper}"): return f"{bumper_path}/{bumper}\n"
     return ""  
 
 def generate_mid_commercials(show):
     commercials=[]
     right_back_bumper = get_pre_post_bumpers(show, "Bumpers/5 - We_ll Be Right Back")
-    commercials.extend(f"{right_back_bumper}\n")
+    commercials.extend(f"{right_back_bumper}")
     commercials.extend(get_commercials(3))
     back_to_bumper = get_pre_post_bumpers(show, "Bumpers/6 - Now Back To")
-    commercials.extend(f"{back_to_bumper}\n")
+    commercials.extend(f"{back_to_bumper}")
     return commercials
 
 def generate_commercial_break():
