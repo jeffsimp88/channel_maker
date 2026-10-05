@@ -2,8 +2,11 @@
 playlist.m3u
 text.txt
 test.py
+*.pyc
 
 # Directories
 Bumpers/
 Commercials/
-_pycache_/
+Holiday Commercials/
+__pycache__/
+.vscode/
